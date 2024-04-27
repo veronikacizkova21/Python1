@@ -1,0 +1,129 @@
+
+"""
+projekt_1.py: první projekt do Engeto Online Python Akademie
+
+author: Veronika Čížková
+
+email: veronika.cizkova21@gmail.com
+discord: veronikacizkova
+
+"""
+
+TEXTS = ['''
+Situated about 10 miles west of Kemmerer,
+Fossil Butte is a ruggedly impressive
+topographic feature that rises sharply
+some 1000 feet above Twin Creek Valley
+to an elevation of more than 7500 feet
+above sea level. The butte is located just
+north of US 30N and the Union Pacific Railroad,
+which traverse the valley. ''',
+'''At the base of Fossil Butte are the bright
+red, purple, yellow and gray beds of the Wasatch
+Formation. Eroded portions of these horizontal
+beds slope gradually upward from the valley floor
+and steepen abruptly. Overlying them and extending
+to the top of the butte are the much steeper
+buff-to-white beds of the Green River Formation,
+which are about 300 feet thick.''',
+'''The monument contains 8198 acres and protects
+a portion of the largest deposit of freshwater fish
+fossils in the world. The richest fossil fish deposits
+are found in multiple limestone layers, which lie some
+100 feet below the top of the butte. The fossils
+represent several varieties of perch, as well as
+other freshwater genera and herring similar to those
+in modern oceans. Other fish such as paddlefish,
+garpike and stingray are also present.'''
+]
+
+users = {"bob":"123", 
+         "ann":"pass123",
+         "mike":"password123",
+         "liz":"pass123"
+        }
+
+name = input("name: ")
+password = input("password: ")
+
+if name not in users or users[name] != password:
+    print("unregistered user")
+    exit()
+
+separator_1 = "-"*40
+
+print(separator_1)
+print(f"Welcome to the app, {name}.")
+print(f"We have {len(TEXTS)} texts to be analyzed.")
+print(separator_1)
+
+try:
+    choice = int(input(f"Enter a number btw. 1 and {len(TEXTS)} to select: "))
+    if not 1 <= choice <= len(TEXTS):
+        print("Invalid input.")
+        exit()
+    choiced_text = TEXTS[choice-1]
+except ValueError:
+    print("Invalid input.")
+    exit()
+
+only_words = choiced_text.replace("."," ").replace(","," ").split()
+titlecase = 0
+uppercase = 0
+lowercase = 0
+numbercase = 0
+sums = 0
+
+for word in only_words:
+    if word.istitle():
+        titlecase += 1
+    elif word.isupper() and word[0].isalpha():
+        uppercase += 1
+    elif word.islower():
+        lowercase += 1
+    else:
+        numbercase += 1
+        sums = round(sums + float(word))
+
+lengths = []
+dictionary_lengths = {}
+for word in only_words:
+    lengths.append(len(word))   #délky jednotlivých slov
+for length in lengths:
+    if length not in dictionary_lengths:
+        dictionary_lengths[length] = lengths.count(length)  #počet jednotlivých délek slov
+
+sorted_lengths = sorted(dictionary_lengths)
+sorted_dictionary_lengths = {}
+
+for key in sorted_lengths:
+    sorted_dictionary_lengths[key] = dictionary_lengths[key]
+
+max_value = max(dictionary_lengths.values()) + 2 
+
+text = "OCCURENCE"
+padding = 3
+second_column_name = " "*padding + text + " "*padding
+space = max(len(second_column_name), max_value) 
+
+print(separator_1)
+
+print(f"There are {len(only_words)} words in the selected text.")
+print(f"There are {titlecase} titlecase words.")
+print(f"There are {uppercase} uppercase words.")
+print(f"There are {lowercase} lowercase words.")
+print(f"There are {numbercase} numeric strings.")
+print(f"The sum of all the numbers {sums}.")
+
+#zavedení druhého separátoru k tabulce pro případ, 
+#kdy by text obsahoval velký počet stejně dlouhých slov:
+separator_2 = "-" * max(40, space + 8)
+
+print(separator_2)
+print("LEN", text.center(space), "NR.", sep='|')
+print(separator_2)
+
+for len, count in sorted_dictionary_lengths.items():
+    first_column = " " * (2 if len < 10 else 1) + str(len)
+    second_column = "*" * count + " " * (space - count)
+    print(first_column, second_column, count, sep = "|")
